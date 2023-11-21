@@ -1,0 +1,4 @@
+pandas==2.1.1
+numpy==1.23.5
+seaborn==0.12.2
+joblib==1.1.1
