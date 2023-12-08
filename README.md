@@ -68,7 +68,7 @@ Below is a preview showcasing some features of the FastAPI:
         </div>
     <div style="flex: 33.33%; text-align: center;">
         <p>FastAPI Result</p>
-        <img src="https://github.com/bambadij/Sepsi_Predict_FastAPI/blob/main/scr/result.png" alt="Middle" width="90%"/>
+        <img src="https://github.com/bambadij/Sepsi_Predict_FastAPI/blob/main/src/result.png" alt="Middle" width="90%"/>
         </div>
 </div>
 
