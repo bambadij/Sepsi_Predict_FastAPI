@@ -60,15 +60,15 @@ Below is a preview showcasing some features of the FastAPI:
 <div style="display: flex; align-items: center;">
     <div style="flex: 33.33%; text-align: center;">
         <p>FastAPI Top</p>
-        <img src="scr/images/homesepsit.png" alt="Top" width="90%"/>
+        <img src="scr/homesepsit.png" alt="Top" width="90%"/>
     </div>
     <div style="flex: 33.33%; text-align: center;">
         <p>FastAPI Input</p>
-        <img src="scr/images/input.png" alt="Middle" width="90%"/>
+        <img src="scr/input.png" alt="Middle" width="90%"/>
         </div>
     <div style="flex: 33.33%; text-align: center;">
         <p>FastAPI Result</p>
-        <img src="scr/images/result.png" alt="Middle" width="90%"/>
+        <img src="scr/result.png" alt="Middle" width="90%"/>
         </div>
 </div>
 
