@@ -1,10 +1,34 @@
-from fastapi import FastAPI
+from fastapi import FastAPI,HTTPException,Response,status
 import joblib 
 from pydantic import BaseModel
 import pandas as pd
 import os ,uvicorn
 import logging
+from xgboost import XGBClassifier
 
+
+
+# Additional information to include in app description
+Util_info = """
+- PRG: Plasma Glucose
+- PL: Blood Work Result-1 (mu U/ml)
+- PR: Blood Pressure (mm Hg)
+- SK: Blood Work Result-2 (mm)
+- TS: Blood Work Result-3 (mu U/ml)
+- M11: Body Mass Index (weight in kg/(height in m)^2)
+- BD2: Blood Work Result-4 (mu U/ml)
+- Age: Patient's Age (years)
+- Insurance: If a patient holds a valid insurance card
+
+Output:
+- Sepsis: Positive if a patient in ICU will develop sepsis, Negative if a patient in ICU will not develop sepsis.
+"""
+
+# APP
+app = FastAPI(
+    title='Sepsis Prediction App',
+    description= Util_info
+)
 #load pipeline
 pipeline  = joblib.load('toolkit/pipeline.joblib')
 encoder  = joblib.load('toolkit/encoder.joblib')
@@ -12,7 +36,7 @@ encoder  = joblib.load('toolkit/encoder.joblib')
 # Configurer les logs
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-#Create class to defineie our input
+#Create class to define our input
 class SepsiFeature(BaseModel):
     PRG:float
     PL:float
@@ -27,56 +51,37 @@ class SepsiFeature(BaseModel):
 
 
 #ENDPOINTS
-app = FastAPI()
 
-@app.get("/home")
+@app.get("/")
 async def home():
     return 'hello word'
 
-@app.post('/predict')
+@app.post('/predict',status_code=status.HTTP_201_CREATED)
 async def PredictSepsi(input:SepsiFeature):
     "function that receive the posted input data,do the operation and return an output /error message"
-    output ={}   
+    # output ={}   
     #try to execute the operation
     try:
-        data = {
-            'PRG': input.PRG,
-            'PL':input.PL,
-            'PR':input.PR,
-            'SK':input.SK,
-            'TS':input.TS,
-            'M11':input.M11,
-            'BD2':input.BD2,
-            'Age':input.Age,
-            'Insurance': input.Insurance,
-        }
         
-        df = pd.DataFrame([data])
+        df = pd.DataFrame([input.model_dump()])
         prediction = pipeline.predict(df)
         # print(f"[iNFO] Input data as dataframe:\n{prediction}")
-
+        decoder_prediction = encoder.inverse_transform([prediction])
         #Ml part
-        if(prediction[0].tolist() ==0):
-            response = "Negative"
-        if(prediction[0].tolist() ==1 ):
-            response ="Positive"
-        # print(prediction)
+        print(f"[iNFO] Input data as dataframe:\n{decoder_prediction.tolist()}")
         #format output
-        output ={
-            "data" : data,
+        return {
+            "data" : input,
             "operation" : "Addition",
             "way": "Sendind a data to predict",
-            "result":response 
+            "result":decoder_prediction.tolist() 
         }
     except ValueError as e :
         logger.error(f"ValueError: {e}")
-        output ={ "error":str(e)}
+        return { "error":str(e)}
         
     except Exception as e :
-        output ={"error ": f"OOps something went wrong :\n{e}"}
-    
-    finally:
-        return output # output must be json serializable
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,detail=f'this is a server error contact administrator {str(e)}')     
 
 if __name__ == "__main__":
     uvicorn.run("main:app",reload=True)
