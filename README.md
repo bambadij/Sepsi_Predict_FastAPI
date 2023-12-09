@@ -75,7 +75,7 @@ Below is a preview showcasing some features of the FastAPI:
 ## Resources
 Here are some ressources you would read to have a good understanding of FastAPI :
 - [Tutorial - User Guide](https://fastapi.tiangolo.com/tutorial/)
-- [Http status codes](https://www.linkedin.com/feed/update/urn:li:activity:7017027658400063488?utm_source=share&utm_medium=member_desktop)
+  
 
 ## Author
 [Bambo Traore](https://www.linkedin.com/in/traore-bamba/)
