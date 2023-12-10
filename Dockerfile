@@ -8,4 +8,4 @@ RUN pip install -r requirements.txt
 
 EXPOSE 800
 
-CMD [ "uvicorne" ,"main:app","--host","0.0.0.0","800"]
+CMD [ "uvicorne" ,"main:app","--host","0.0.0.0","800"] 
