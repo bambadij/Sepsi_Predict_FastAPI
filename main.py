@@ -4,7 +4,7 @@ from pydantic import BaseModel
 import pandas as pd
 import os ,uvicorn
 import logging
-from xgboost import XGBClassifier
+from fastapi.middleware.cors import CORSMiddleware
 
 
 
@@ -28,6 +28,19 @@ Output:
 app = FastAPI(
     title='Sepsis Prediction App',
     description= Util_info
+)
+
+origins = [
+    "*",
+]
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"]
 )
 #load pipeline
 pipeline  = joblib.load('toolkit/pipeline.joblib')
@@ -61,10 +74,11 @@ async def PredictSepsi(input:SepsiFeature):
     "function that receive the posted input data,do the operation and return an output /error message"
     # output ={}   
     #try to execute the operation
-    try:
+    try: 
         
         df = pd.DataFrame([input.model_dump()])
         prediction = pipeline.predict(df)
+        predict_proba = pipeline.predict_proba(df) 
         # print(f"[iNFO] Input data as dataframe:\n{prediction}")
         decoder_prediction = encoder.inverse_transform([prediction])
         #Ml part
@@ -74,6 +88,7 @@ async def PredictSepsi(input:SepsiFeature):
             "data" : input,
             "operation" : "Addition",
             "way": "Sendind a data to predict",
+            "proba_predict" : predict_proba[0].tolist(),
             "result":decoder_prediction.tolist() 
         }
     except ValueError as e :
@@ -84,4 +99,4 @@ async def PredictSepsi(input:SepsiFeature):
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,detail=f'this is a server error contact administrator {str(e)}')     
 
 if __name__ == "__main__":
-    uvicorn.run("main:app",reload=True)
+    uvicorn.run("main:app",host="0.0.0.0" ,port=8000,reload=True)
