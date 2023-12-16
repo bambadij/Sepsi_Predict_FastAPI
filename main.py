@@ -92,7 +92,7 @@ async def PredictSepsi(input:SepsiFeature):
             "result":decoder_prediction.tolist() 
         }
     except ValueError as e :
-        logger.error(f"ValueError: {e}")
+        logger.error(f"ValueError: {e}") 
         return { "error":str(e)}
         
     except Exception as e :
