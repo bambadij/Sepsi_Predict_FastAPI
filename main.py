@@ -4,7 +4,6 @@ from pydantic import BaseModel
 import pandas as pd
 import os ,uvicorn
 import logging
-from fastapi.middleware.cors import CORSMiddleware
 
 
 
@@ -30,18 +29,9 @@ app = FastAPI(
     description= Util_info
 )
 
-origins = [
-    "*",
-]
 
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"]
-)
+
 #load pipeline
 pipeline  = joblib.load('toolkit/pipeline.joblib')
 encoder  = joblib.load('toolkit/encoder.joblib')
