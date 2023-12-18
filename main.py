@@ -90,7 +90,7 @@ async def PredictSepsi(input:SepsiFeature):
             "way": "Sendind a data to predict",
             "proba_predict" : predict_proba[0].tolist(),
             "result":decoder_prediction.tolist() 
-        }
+        } 
     except ValueError as e :
         logger.error(f"ValueError: {e}") 
         return { "error":str(e)}
